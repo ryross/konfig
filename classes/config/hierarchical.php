@@ -52,9 +52,9 @@ class Config_Hierarchical extends Config_Reader {
 			// Determine the other directory to check for configs
 			$sub_dir = FALSE;
 			if (isset($this->_env_map[Kohana::$environment])) {				
-				$sub_dir = DIRECTORY_SEPARATOR.$this->_env_map[Kohana::$environment];
+				$sub_dir = DIRECTORY_SEPARATOR.'env_'.$this->_env_map[Kohana::$environment];
 			} else if (is_string(Kohana::$environment)) {
-				$sub_dir = DIRECTORY_SEPARATOR.Kohana::$environment;
+				$sub_dir = DIRECTORY_SEPARATOR.'env_'.Kohana::$environment;
 			}
 			
 			if ($sub_dir && $files = Kohana::find_file($this->_directory.$sub_dir, $group, NULL, TRUE))
