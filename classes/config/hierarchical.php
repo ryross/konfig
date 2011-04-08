@@ -23,14 +23,37 @@ class Config_Hierarchical extends Config_Reader {
 	protected $_configuration_group;
 
 	/**
+	 * @var string subdirectory to pull configs from
+	 */
+	protected $_subdirectory = NULL;
+
+	/**
 	 * @var  bool  Has the config group changed?
 	 */
 	protected $_configuration_modified = FALSE;
 
-	public function __construct($directory = 'config')
+
+	public function __construct($directory = 'config', $env = NULL)
 	{
 		// Set the configuration directory name
 		$this->_directory = trim($directory, '/');
+		
+		// Determine the other directory to check for configs
+		if ($env != NULL)
+		{
+			$this->_subdirectory = 'env_'.$env;
+		}
+		else
+		{
+			if (is_string(Kohana::$environment))
+			{
+				$this->_subdirectory = 'env_'.Kohana::$environment;
+			}
+			else if (isset($this->_env_map[Kohana::$environment]))
+			{
+				$this->_subdirectory = 'env_'.$this->_env_map[Kohana::$environment];
+			}
+		}
 
 		// Load the empty array
 		parent::__construct();
@@ -49,15 +72,7 @@ class Config_Hierarchical extends Config_Reader {
 				$config = Arr::merge($config, Kohana::load($file));
 			}
 			
-			// Determine the other directory to check for configs
-			$sub_dir = FALSE;
-			if (isset($this->_env_map[Kohana::$environment])) {				
-				$sub_dir = DIRECTORY_SEPARATOR.'env_'.$this->_env_map[Kohana::$environment];
-			} else if (is_string(Kohana::$environment)) {
-				$sub_dir = DIRECTORY_SEPARATOR.'env_'.Kohana::$environment;
-			}
-			
-			if ($sub_dir && $files = Kohana::find_file($this->_directory.$sub_dir, $group, NULL, TRUE))
+			if ($this->_subdirectory && $files = Kohana::find_file($this->_directory.DIRECTORY_SEPARATOR.$this->_subdirectory, $group, NULL, TRUE))
 			{
 				foreach ($files as $file)
 				{
