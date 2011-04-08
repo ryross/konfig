@@ -1,5 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * File-based hierarchical configuration reader. 
+ *
+ * @package    Kohana
+ * @category   Configuration
+ * @author     Kohana Team and Ryder Ross
+ * @copyright  (c) 2009-2011 Kohana Team and Ryder Ross
+ * @license    http://kohanaframework.org/license
+ */
 class Config_Hierarchical extends Config_Reader {
 
 	protected $_env_map = array(
@@ -40,7 +48,8 @@ class Config_Hierarchical extends Config_Reader {
 				// Merge each file to the configuration array
 				$config = Arr::merge($config, Kohana::load($file));
 			}
-
+			
+			// Determine the other directory to check for configs
 			$sub_dir = FALSE;
 			if (isset($this->_env_map[Kohana::$environment])) {				
 				$sub_dir = DIRECTORY_SEPARATOR.$this->_env_map[Kohana::$environment];
